@@ -4,55 +4,51 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict, field
 from typing import List, Literal, Optional
 import json
+from datetime import datetime,date
 
 
-# ------------------------------------------------------------
 # TYPE DEFINITIONS
-# ------------------------------------------------------------
 SourceLiteral = Literal["excel", "quickbooks"]
 ConflictReason = Literal["missing_in_excel", "missing_in_quickbooks", "data_mismatch"]
 
-
-# ------------------------------------------------------------
-# CORE DATA MODELS
-# ------------------------------------------------------------
 @dataclass
 class BillRecord:
-    """Represents a single bill record from Excel or QuickBooks."""
-
-    record_id: str  # Parent ID or Child ID
+    record_id: str
     supplier: Optional[str] = None
-    bank_date: Optional[str] = None
-    chart_account: Optional[str] = None  # Tier 2 - Chart of Account or similar
+    bank_date: Optional[datetime] = None
+    chart_account: Optional[str] = None
     amount: Optional[float] = None
     memo: Optional[str] = None
     line_memo: Optional[str] = None
-    source: SourceLiteral = "excel"
+    source: str = "excel"
+    added_to_qb: bool = False
 
-    def __repr__(self):
-        return f"<BillRecord {self.record_id} ({self.source})>"
+    def __str__(self):
+        if isinstance(self.bank_date, (datetime, date)):
+            date_str = self.bank_date.strftime("%Y-%m-%d")
+        else:
+            date_str = str(self.bank_date) if self.bank_date else "N/A"
+
+        return (
+            f"BillRecord(record_id={self.record_id}, supplier={self.supplier}, "
+            f"bank_date={date_str}, chart_account={self.chart_account}, "
+            f"amount={self.amount}, memo={self.memo}, line_memo={self.line_memo}, "
+            f"source={self.source}, added_to_qb={self.added_to_qb})"
+    )
 
 
-# ------------------------------------------------------------
-# CONFLICT MODEL
-# ------------------------------------------------------------
 @dataclass
 class Conflict:
-    """Represents a data mismatch or missing record between Excel and QuickBooks."""
-
     record_id: str
-    excel_value: Optional[str]
-    qb_value: Optional[str]
-    reason: ConflictReason
+    excel_name: Optional[str]
+    qb_name: Optional[str]
+    reason: str
 
 
-# ------------------------------------------------------------
-# REPORT MODEL
-# ------------------------------------------------------------
 @dataclass
 class ComparisonReport:
     """Contains the full comparison results between Excel and QuickBooks data."""
-
+    
     excel_only: List[BillRecord] = field(default_factory=list)
     qb_only: List[BillRecord] = field(default_factory=list)
     conflicts: List[Conflict] = field(default_factory=list)
@@ -80,34 +76,6 @@ class ComparisonReport:
                 f.write(json_str)
 
         return json_str
-
-
-@dataclass
-class BillRecord:
-    record_id: str
-    supplier: Optional[str] = None
-    bank_date: Optional[str] = None
-    chart_account: Optional[str] = None
-    amount: Optional[float] = None
-    memo: Optional[str] = None
-    line_memo: Optional[str] = None
-    source: str = "excel"
-    added_to_qb: bool = False  # NEW FIELD
-
-
-@dataclass
-class Conflict:
-    record_id: str
-    excel_name: Optional[str]
-    qb_name: Optional[str]
-    reason: str
-
-
-@dataclass
-class ComparisonReport:
-    excel_only: List[BillRecord]
-    qb_only: List[BillRecord]
-    conflicts: List[Conflict]
 
 
 __all__ = [

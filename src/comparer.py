@@ -1,71 +1,49 @@
-from __future__ import annotations
-from typing import Iterable
-from models import ComparisonReport, Conflict, BillRecord
 
+from typing import List
+from models import BillRecord, ComparisonReport, Conflict
 
-def compare_bills(
-    excel_bills: Iterable[BillRecord], qb_bills: Iterable[BillRecord]
-) -> ComparisonReport:
+def compare_bills(excel_bills: List[BillRecord], qb_bills: List[BillRecord]) -> ComparisonReport:
     """
-    Compare Excel bills and QuickBooks bills.
-    Parent bills: compare record_id and memo
-    Child bills: compare record_id and line_memo
+    Compare Excel and QuickBooks bills.
+
+    Rules:
+    1. Excel-only bills → to add to QB
+    2. QB-only bills → missing in Excel
+    3. Shared record_ids → check for conflicts (amount, CoA, line memo)
     """
-    excel_dict = {bill.record_id: bill for bill in excel_bills}
-    qb_dict = {bill.record_id: bill for bill in qb_bills}
 
-    excel_only, qb_only, conflicts = [], [], []
+    # Index by record_id for O(1) lookup
+    excel_by_id = {b.record_id: b for b in excel_bills}
+    qb_by_id = {b.record_id: b for b in qb_bills}
 
-    all_ids = set(excel_dict.keys()) | set(qb_dict.keys())
+    # Excel-only bills
+    excel_only = [b for rid, b in excel_by_id.items() if rid not in qb_by_id]
 
-    for record_id in all_ids:
-        excel_bill = excel_dict.get(record_id)
-        qb_bill = qb_dict.get(record_id)
+    # QB-only bills
+    qb_only = [b for rid, b in qb_by_id.items() if rid not in excel_by_id]
 
-        # Excel only
-        if excel_bill and not qb_bill:
-            excel_only.append(excel_bill)
+    # Conflicts
+    conflicts = []
+    for rid in excel_by_id.keys() & qb_by_id.keys():  # Shared record_ids
+        excel_bill = excel_by_id[rid]
+        qb_bill = qb_by_id[rid]
 
-        # QuickBooks only
-        elif qb_bill and not excel_bill:
-            qb_only.append(qb_bill)
-
-        # Both exist → compare
-        elif excel_bill and qb_bill:
-            mismatch_fields = []
-
-            # Parent vs memo
-            if (
-                excel_bill.line_memo == ""
-                and qb_bill.line_memo == ""
-                and excel_bill.memo != qb_bill.memo
-            ):
-                mismatch_fields.append("Memo mismatch")
-
-            # Child vs line_memo
-            if (
-                excel_bill.line_memo
-                and qb_bill.line_memo
-                and excel_bill.line_memo != qb_bill.line_memo
-            ):
-                mismatch_fields.append("LineMemo mismatch")
-
-            # Other checks
-            if excel_bill.supplier != qb_bill.supplier:
-                mismatch_fields.append("Supplier/Vendor mismatch")
-            if str(excel_bill.amount) != str(qb_bill.amount):
-                mismatch_fields.append("Amount mismatch")
-            if excel_bill.chart_account != qb_bill.chart_account:
-                mismatch_fields.append("ChartAccount mismatch")
-
-            if mismatch_fields:
-                conflicts.append(
-                    Conflict(
-                        record_id=record_id,
-                        excel_name=str(excel_bill) if excel_bill else None,
-                        qb_name=str(qb_bill) if qb_bill else None,
-                        reason=", ".join(mismatch_fields),
-                    )
+        # Compare key fields: amount, chart_account, line_memo
+        if (excel_bill.amount != qb_bill.amount or
+            excel_bill.chart_account != qb_bill.chart_account or
+            excel_bill.line_memo != qb_bill.line_memo):
+            conflicts.append(
+                Conflict(
+                    record_id=rid,
+                    excel_name=f"Amount: {excel_bill.amount}, CoA: {excel_bill.chart_account}, LineMemo: {excel_bill.line_memo}",
+                    qb_name=f"Amount: {qb_bill.amount}, CoA: {qb_bill.chart_account}, LineMemo: {qb_bill.line_memo}",
+                    reason="data_mismatch"
                 )
+            )
 
-    return ComparisonReport(excel_only=excel_only, qb_only=qb_only, conflicts=conflicts)
+    # Return a ComparisonReport
+    return ComparisonReport(
+        excel_only=excel_only,
+        qb_only=qb_only,
+        conflicts=conflicts
+    )

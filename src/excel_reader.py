@@ -1,8 +1,9 @@
 from openpyxl import load_workbook
 from models import BillRecord
+from pathlib import Path
 
 
-def read_excel_data(file_path: str) -> list[BillRecord]:
+def read_excel_data(file_path: Path ) -> list[BillRecord]:
     """Read and parse Excel data dynamically based on column headers."""
     workbook = load_workbook(filename=file_path, data_only=True)
     sheet = workbook.active
@@ -18,8 +19,7 @@ def read_excel_data(file_path: str) -> list[BillRecord]:
         "Parent ID",
         "Child ID",
         "Supplier",
-        "Comments",
-        "Invoice Amount",
+        "Check Amount",
         "Bank Date",
         "Tier 2 - Chart of Account",
     ]
@@ -37,7 +37,8 @@ def read_excel_data(file_path: str) -> list[BillRecord]:
             parent_id = str(row[header_index.get("Parent ID", "")] or "").strip()
             child_id = str(row[header_index.get("Child ID", "")] or "").strip()
             supplier = str(row[header_index.get("Supplier", "")] or "").strip()
-            memo = str(row[header_index.get("Comments", "")] or "").strip()
+            memo = str(row[header_index.get("Parent ID", "")] or "").strip()
+            line_memo = str(row[header_index.get("Child ID", "")] or "").strip()
             bank_date = str(row[header_index.get("Bank Date", "")] or "").strip()
             chart_account = str(
                 row[header_index.get("Tier 2 - Chart of Account", "")] or ""
@@ -45,7 +46,7 @@ def read_excel_data(file_path: str) -> list[BillRecord]:
 
             # Safely convert amount to float
             amount_str = (
-                str(row[header_index.get("Invoice Amount", "")] or "")
+                str(row[header_index.get("Check Amount", "")] or "")
                 .replace("$", "")
                 .replace(",", "")
                 .strip()
@@ -53,7 +54,7 @@ def read_excel_data(file_path: str) -> list[BillRecord]:
             amount = float(amount_str) if amount_str else 0.0
 
             # Determine which ID to use as record_id
-            record_id = child_id if child_id else parent_id
+            record_id = parent_id
 
             # Skip rows without valid IDs
             if not record_id:
@@ -67,7 +68,7 @@ def read_excel_data(file_path: str) -> list[BillRecord]:
                     chart_account=chart_account,
                     amount=amount,
                     memo=memo,
-                    line_memo=memo,
+                    line_memo=line_memo,
                     source="excel",
                 )
             )
@@ -78,3 +79,10 @@ def read_excel_data(file_path: str) -> list[BillRecord]:
 
     print(f"Loaded {len(bills)} bill records from Excel.")
     return bills
+
+
+if __name__ == "__main__":
+    file_path = "C:\\Users\\PavuluriA\\Quickbook Services Bill\\QB_Connector_Service_Bill_Python_Fall_2025\\company_data.xlsx" 
+    records = read_excel_data(file_path)
+    for record in records:
+        print(record)
