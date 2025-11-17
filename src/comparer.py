@@ -32,15 +32,26 @@ def compare_bills(
 
         # Compare key fields: amount, chart_account, line_memo
         if (
-            excel_bill.amount != qb_bill.amount
+            excel_bill.supplier != qb_bill.supplier
+            or excel_bill.amount != qb_bill.amount
             or excel_bill.chart_account != qb_bill.chart_account
             or excel_bill.line_memo != qb_bill.line_memo
         ):
             conflicts.append(
                 Conflict(
                     record_id=rid,
-                    excel_name=f"Amount: {excel_bill.amount}, CoA: {excel_bill.chart_account}, LineMemo: {excel_bill.line_memo}",
-                    qb_name=f"Amount: {qb_bill.amount}, CoA: {qb_bill.chart_account}, LineMemo: {qb_bill.line_memo}",
+                    excel_name=(
+                        f"Supplier: {excel_bill.supplier}, "
+                        f"Amount: {excel_bill.amount}, "
+                        f"CoA: {excel_bill.chart_account}, "
+                        f"LineMemo: {excel_bill.line_memo}"
+                    ),
+                    qb_name=(
+                        f"Supplier: {qb_bill.supplier}, "
+                        f"Amount: {qb_bill.amount}, "
+                        f"CoA: {qb_bill.chart_account}, "
+                        f"LineMemo: {qb_bill.line_memo}"
+                    ),
                     reason="data_mismatch",
                 )
             )

@@ -1,73 +1,25 @@
 {
-    "conflicts": [],
-    "excel_only": [
-        {
-            "record_id": "46034",
-            "supplier": "A",
-            "bank_date": "2024-12-16 00:00:00",
-            "chart_account": "Inventory",
-            "amount": 10.0,
-            "memo": "46034",
-            "line_memo": "123",
-            "source": "excel",
-            "added_to_qb": true
-        },
-        {
-            "record_id": "45104",
-            "supplier": "B",
-            "bank_date": "2024-04-25 00:00:00",
-            "chart_account": "Inventory",
-            "amount": 479.5,
-            "memo": "45104",
-            "line_memo": "",
-            "source": "excel",
-            "added_to_qb": true
-        },
-        {
-            "record_id": "46242",
-            "supplier": "C",
-            "bank_date": "2025-01-13 00:00:00",
-            "chart_account": "Shareholder Distributions",
-            "amount": 1953.81,
-            "memo": "46242",
-            "line_memo": "46335",
-            "source": "excel",
-            "added_to_qb": true
-        },
-        {
-            "record_id": "44139",
-            "supplier": "C",
-            "bank_date": "2024-01-02 00:00:00",
-            "chart_account": "Shareholder Distributions",
-            "amount": 1017.23,
-            "memo": "44139",
-            "line_memo": "44611",
-            "source": "excel",
-            "added_to_qb": true
-        },
+    "conflicts": [
         {
             "record_id": "44151",
-            "supplier": "C",
-            "bank_date": "2024-01-10 00:00:00",
-            "chart_account": "Shareholder Distributions",
-            "amount": 5120.73,
-            "memo": "44151",
-            "line_memo": "44458",
-            "source": "excel",
-            "added_to_qb": true
+            "excel_name": "Supplier: A, Amount: 5120.73, CoA: Shareholder Distributions, LineMemo: 44458",
+            "qb_name": "Supplier: C, Amount: 5120.73, CoA: Shareholder Distributions, LineMemo: 44458",
+            "reason": "data_mismatch"
         },
         {
             "record_id": "1234",
-            "supplier": "A",
-            "bank_date": "2024-02-13 00:00:00",
-            "chart_account": "Inventory",
-            "amount": 5000.0,
-            "memo": "1234",
-            "line_memo": "123",
-            "source": "excel",
-            "added_to_qb": true
+            "excel_name": "Supplier: B, Amount: 5000.0, CoA: Inventory, LineMemo: 123",
+            "qb_name": "Supplier: A, Amount: 5000.0, CoA: Inventory, LineMemo: 123",
+            "reason": "data_mismatch"
+        },
+        {
+            "record_id": "44139",
+            "excel_name": "Supplier: A, Amount: 1017.0, CoA: Shareholder Distributions, LineMemo: 44611",
+            "qb_name": "Supplier: C, Amount: 1017.23, CoA: Shareholder Distributions, LineMemo: 44611",
+            "reason": "data_mismatch"
         }
     ],
+    "excel_only": [],
     "qb_only": [
         {
             "record_id": "001",
