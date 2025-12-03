@@ -40,7 +40,7 @@ def run():
 
     # Step 5: Save report
     save_comparison_report(comparison_report, report_path)
-    # print(f"Report saved to {report_path}")
+    print(f"Report saved to {report_path}")
 
 
 if __name__ == "__main__":

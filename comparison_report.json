@@ -1,19 +1,42 @@
 {
     "status": "success",
-    "generated_at": "2025-12-03T19:14:19.670094",
-    "added_bills": [],
+    "generated_at": "2025-12-03T19:20:47.020197",
+    "added_bills": [
+        {
+            "record_id": "123",
+            "supplier": "test",
+            "bank_date": "2025-12-01T00:00:00",
+            "amount": 500.0,
+            "chart_account": "Utilities",
+            "memo": "123",
+            "line_memo": "1234",
+            "source": "excel",
+            "added_to_qb": true
+        },
+        {
+            "record_id": "5000",
+            "supplier": "test",
+            "bank_date": "2025-11-11T00:00:00",
+            "amount": 9000.0,
+            "chart_account": "Inventory",
+            "memo": "5000",
+            "line_memo": "500",
+            "source": "excel",
+            "added_to_qb": true
+        }
+    ],
     "conflicts": [
         {
-            "record_id": "44139",
+            "record_id": "45104",
             "reason": "data_mismatch",
-            "excel_supplier": "A",
-            "qb_supplier": "C",
-            "excel_amount": 1017.0,
-            "qb_amount": 1017.23,
-            "excel_chart_account": "Shareholder Distributions",
-            "qb_chart_account": "Shareholder Distributions",
-            "excel_line_memo": "44611",
-            "qb_line_memo": "44611"
+            "excel_supplier": "C",
+            "qb_supplier": "B",
+            "excel_amount": 132.65,
+            "qb_amount": 479.5,
+            "excel_chart_account": "Inventory",
+            "qb_chart_account": "Inventory",
+            "excel_line_memo": "45226",
+            "qb_line_memo": ""
         },
         {
             "record_id": "44151",
@@ -28,18 +51,6 @@
             "qb_line_memo": "44458"
         },
         {
-            "record_id": "45104",
-            "reason": "data_mismatch",
-            "excel_supplier": "C",
-            "qb_supplier": "B",
-            "excel_amount": 132.65,
-            "qb_amount": 479.5,
-            "excel_chart_account": "Inventory",
-            "qb_chart_account": "Inventory",
-            "excel_line_memo": "45226",
-            "qb_line_memo": ""
-        },
-        {
             "record_id": "1234",
             "reason": "data_mismatch",
             "excel_supplier": "B",
@@ -50,6 +61,18 @@
             "qb_chart_account": "Inventory",
             "excel_line_memo": "123",
             "qb_line_memo": "123"
+        },
+        {
+            "record_id": "44139",
+            "reason": "data_mismatch",
+            "excel_supplier": "A",
+            "qb_supplier": "C",
+            "excel_amount": 1017.0,
+            "qb_amount": 1017.23,
+            "excel_chart_account": "Shareholder Distributions",
+            "qb_chart_account": "Shareholder Distributions",
+            "excel_line_memo": "44611",
+            "qb_line_memo": "44611"
         },
         {
             "record_id": "001",
@@ -76,6 +99,6 @@
             "qb_line_memo": "B012"
         }
     ],
-    "same_bills": 4,
+    "same_bills": 2,
     "error": null
 }

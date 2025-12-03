@@ -22,17 +22,125 @@ To manually run ruff check and auto fix:
 poetry run ruff check --fix
 ```
 
-## Test
+## Execution
+
 Run
 ```bash
-poetry run pytest
+poetry run python -m src.cli --workbook company_data.xlsx
+```
+Build Exe
+```bash
+poetry run pyinstaller --onefile --name Service_bill_cli --hidden-import win32timezone --hidden-import win32com.client build_exe.py
+```
+Run Exe
+```bash
+Service_bill_cli.exe --workbook company_data.xlsx
 ```
 
-## RUN
-poetry run python -m src.cli --workbook company_data.xlsx
-
-# BUILD EXE
-poetry run pyinstaller --onefile --name payment_terms_cli --hidden-import win32timezone --hidden-import win32com.client build_exe.py
-
-# RUN EXE
-payment_terms_cli.exe --workbook company_data.xlsx
+Example JSON
+```bash
+{
+    "status": "success",
+    "generated_at": "2025-12-03T19:20:47.020197",
+    "added_bills": [
+        {
+            "record_id": "123",
+            "supplier": "test",
+            "bank_date": "2025-12-01T00:00:00",
+            "amount": 500.0,
+            "chart_account": "Utilities",
+            "memo": "123",
+            "line_memo": "1234",
+            "source": "excel",
+            "added_to_qb": true
+        },
+        {
+            "record_id": "5000",
+            "supplier": "test",
+            "bank_date": "2025-11-11T00:00:00",
+            "amount": 9000.0,
+            "chart_account": "Inventory",
+            "memo": "5000",
+            "line_memo": "500",
+            "source": "excel",
+            "added_to_qb": true
+        }
+    ],
+    "conflicts": [
+        {
+            "record_id": "45104",
+            "reason": "data_mismatch",
+            "excel_supplier": "C",
+            "qb_supplier": "B",
+            "excel_amount": 132.65,
+            "qb_amount": 479.5,
+            "excel_chart_account": "Inventory",
+            "qb_chart_account": "Inventory",
+            "excel_line_memo": "45226",
+            "qb_line_memo": ""
+        },
+        {
+            "record_id": "44151",
+            "reason": "data_mismatch",
+            "excel_supplier": "A",
+            "qb_supplier": "C",
+            "excel_amount": 5120.73,
+            "qb_amount": 5120.73,
+            "excel_chart_account": "Shareholder Distributions",
+            "qb_chart_account": "Shareholder Distributions",
+            "excel_line_memo": "44458",
+            "qb_line_memo": "44458"
+        },
+        {
+            "record_id": "1234",
+            "reason": "data_mismatch",
+            "excel_supplier": "B",
+            "qb_supplier": "A",
+            "excel_amount": 5000.0,
+            "qb_amount": 5000.0,
+            "excel_chart_account": "Inventory",
+            "qb_chart_account": "Inventory",
+            "excel_line_memo": "123",
+            "qb_line_memo": "123"
+        },
+        {
+            "record_id": "44139",
+            "reason": "data_mismatch",
+            "excel_supplier": "A",
+            "qb_supplier": "C",
+            "excel_amount": 1017.0,
+            "qb_amount": 1017.23,
+            "excel_chart_account": "Shareholder Distributions",
+            "qb_chart_account": "Shareholder Distributions",
+            "excel_line_memo": "44611",
+            "qb_line_memo": "44611"
+        },
+        {
+            "record_id": "001",
+            "reason": "missing_in_excel",
+            "excel_supplier": null,
+            "qb_supplier": "C",
+            "excel_amount": null,
+            "qb_amount": 5000.0,
+            "excel_chart_account": null,
+            "qb_chart_account": "Utilities",
+            "excel_line_memo": null,
+            "qb_line_memo": "123"
+        },
+        {
+            "record_id": "B002",
+            "reason": "missing_in_excel",
+            "excel_supplier": null,
+            "qb_supplier": "B",
+            "excel_amount": null,
+            "qb_amount": 80.0,
+            "excel_chart_account": null,
+            "qb_chart_account": "Utilities",
+            "excel_line_memo": null,
+            "qb_line_memo": "B012"
+        }
+    ],
+    "same_bills": 2,
+    "error": null
+}
+```
